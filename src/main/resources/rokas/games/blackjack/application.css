@@ -1,0 +1,53 @@
+#board,
+#coverPane{
+    -fx-background-image: url("Media/board.jpg")
+}
+
+#button{
+    -fx-background-color: white;
+    -fx-border-radius: 50px;
+}
+
+#displayDealerFaceValue,
+#displayPlayerFaceValue,
+#scoreText{
+    -fx-color-label-visible: white;
+}
+
+#tenButton,
+#twentyFiveButton,
+#fiftyButton,
+#hundredButton,
+#twoHundredButton{
+    -fx-min-height: 60px;
+    -fx-min-width: 60px;
+    -fx-max-height: 60px;
+    -fx-max-width: 60px;
+    -fx-background-radius: 100%;
+    -fx-border-width: 2px;
+    -fx-border-color: black;
+    -fx-border-style: dashed;
+    -fx-border-radius: 100%;
+}
+
+#tenButton{
+    -fx-background-color: skyblue;
+}
+#twentyFiveButton{
+    -fx-background-color: blue;
+}
+#fiftyButton{
+    -fx-background-color: purple;
+}
+#hundredButton{
+    -fx-background-color: darkred;
+}
+#twoHundredButton{
+    -fx-background-color: pink;
+}
+#allInButton{
+    -fx-background-color: green;
+}
+#resetButton{
+    -fx-background-color: red;
+}
