@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="board" prefHeight="793.0" prefWidth="1134.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rokas.games.blackjack.Controllers.DeckViewController">
+   <children>
+      <Button fx:id="hitButton" layoutX="246.0" layoutY="347.0" mnemonicParsing="false" onAction="#hitCard" prefHeight="38.0" prefWidth="122.0" text="HIT">
+         <font>
+            <Font name="Tempus Sans ITC" size="20.0" />
+         </font></Button>
+      <Button fx:id="standButton" layoutX="750.0" layoutY="347.0" mnemonicParsing="false" onAction="#standCard" prefHeight="38.0" prefWidth="122.0" text="STAND">
+         <font>
+            <Font name="Tempus Sans ITC" size="20.0" />
+         </font></Button>
+      <Button fx:id="doubleButton" layoutX="750.0" layoutY="423.0" mnemonicParsing="false" onAction="#doubleCard" prefHeight="38.0" prefWidth="122.0" text="DOUBLE">
+         <font>
+            <Font name="Tempus Sans ITC" size="20.0" />
+         </font></Button>
+      <Text fx:id="playerScoreText" fill="#d0d7cb" layoutX="510.0" layoutY="490.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Score:">
+         <font>
+            <Font name="Tempus Sans ITC" size="22.0" />
+         </font></Text>
+      <Text fx:id="displayPlayerFaceValue" fill="#d0d7cb" layoutX="571.0" layoutY="492.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" ">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font></Text>
+      <ImageView fx:id="playerCard1" fitHeight="230.0" fitWidth="140.0" layoutX="270.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="playerCard2" fitHeight="230.0" fitWidth="140.0" layoutX="331.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="playerCard3" fitHeight="230.0" fitWidth="140.0" layoutX="392.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="playerCard4" fitHeight="230.0" fitWidth="140.0" layoutX="471.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="playerCard5" fitHeight="230.0" fitWidth="140.0" layoutX="532.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="playerCard6" fitHeight="230.0" fitWidth="140.0" layoutX="571.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="playerCard7" fitHeight="230.0" fitWidth="140.0" layoutX="614.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="playerCard8" fitHeight="230.0" fitWidth="140.0" layoutX="668.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="playerCard9" fitHeight="230.0" fitWidth="140.0" layoutX="725.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="playerCard10" fitHeight="230.0" fitWidth="140.0" layoutX="785.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="playerCard11" fitHeight="230.0" fitWidth="140.0" layoutX="868.0" layoutY="525.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard1" fitHeight="230.0" fitWidth="140.0" layoutX="309.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard2" fitHeight="230.0" fitWidth="140.0" layoutX="370.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard3" fitHeight="230.0" fitWidth="140.0" layoutX="431.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard4" fitHeight="230.0" fitWidth="140.0" layoutX="510.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard5" fitHeight="230.0" fitWidth="140.0" layoutX="571.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard6" fitHeight="230.0" fitWidth="140.0" layoutX="610.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard7" fitHeight="230.0" fitWidth="140.0" layoutX="650.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard8" fitHeight="230.0" fitWidth="140.0" layoutX="698.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard9" fitHeight="230.0" fitWidth="140.0" layoutX="741.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard10" fitHeight="230.0" fitWidth="140.0" layoutX="795.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="dealerCard11" fitHeight="230.0" fitWidth="140.0" layoutX="838.0" layoutY="26.0" pickOnBounds="true" preserveRatio="true" />
+      <Text fx:id="dealerScoreText" fill="#d0d7cb" layoutX="510.0" layoutY="345.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Score:">
+         <font>
+            <Font name="Tempus Sans ITC" size="22.0" />
+         </font></Text>
+      <Text fx:id="displayDealerFaceValue" fill="#d0d7cb" layoutX="571.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" ">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font></Text>
+      <Button fx:id="playButton" layoutX="471.0" layoutY="377.0" mnemonicParsing="false" onAction="#startGame" prefHeight="38.0" prefWidth="140.0" text="PLAY" textAlignment="CENTER">
+         <font>
+            <Font name="Tempus Sans ITC" size="18.0" />
+         </font>
+      </Button>
+      <Text fx:id="winsText" fill="#d0d7cb" layoutX="407.0" layoutY="370.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" " textAlignment="CENTER" wrappingWidth="259.2000366210939">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Text>
+      <Text fx:id="cardsInDeck" fill="#d0d7cb" layoutX="1052.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" ">
+         <font>
+            <Font size="16.0" />
+         </font></Text>
+      <ImageView fx:id="cardsLeftImageView" fitHeight="50.0" fitWidth="50.0" layoutX="993.0" layoutY="57.0" pickOnBounds="true" preserveRatio="true" />
+      <Text fx:id="moneyText" fill="#d0d7cb" layoutX="61.0" layoutY="752.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Your Money:">
+         <font>
+            <Font name="Tempus Sans ITC" size="22.0" />
+         </font>
+      </Text>
+      <Text fx:id="playerMoney" fill="#d0d7cb" layoutX="200.0" layoutY="753.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" ">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Text>
+      <AnchorPane fx:id="betPane" layoutX="22.0" layoutY="146.0" prefHeight="570.0" prefWidth="211.0">
+         <children>
+            <Button fx:id="tenButton" layoutX="69.0" layoutY="14.0" mnemonicParsing="false" onAction="#betTen" prefHeight="26.0" prefWidth="73.0" text="10">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Button>
+            <Text fx:id="betNotice" fill="#f41717" layoutX="11.0" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" " textAlignment="CENTER" wrappingWidth="199.99999999999994">
+               <font>
+                  <Font name="Tempus Sans ITC" size="14.0" />
+               </font>
+            </Text>
+            <Button fx:id="twentyFiveButton" layoutX="69.0" layoutY="111.0" mnemonicParsing="false" onAction="#betTwentyFive" prefHeight="26.0" prefWidth="73.0" text="25">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="fiftyButton" layoutX="69.0" layoutY="202.0" mnemonicParsing="false" onAction="#betFifty" prefHeight="26.0" prefWidth="73.0" text="50">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="hundredButton" layoutX="69.0" layoutY="294.0" mnemonicParsing="false" onAction="#betHundred" prefHeight="26.0" prefWidth="73.0" text="100">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="twoHundredButton" layoutX="69.0" layoutY="390.0" mnemonicParsing="false" onAction="#betTwoHundred" prefHeight="26.0" prefWidth="73.0" text="200">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="allInButton" layoutX="123.0" layoutY="497.0" mnemonicParsing="false" onAction="#betAllIn" prefHeight="26.0" prefWidth="73.0" text="All in">
+               <font>
+                  <Font name="Tempus Sans ITC" size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="resetButton" layoutX="14.0" layoutY="497.0" mnemonicParsing="false" onAction="#restartBet" prefHeight="26.0" prefWidth="73.0" text="Reset">
+               <font>
+                  <Font name="Tempus Sans ITC" size="16.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <Text fx:id="betText" fill="#d0d7cb" layoutX="82.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bet:">
+         <font>
+            <Font name="Tempus Sans ITC" size="22.0" />
+         </font>
+      </Text>
+      <Text fx:id="betAmount" fill="#d0d7cb" layoutX="133.0" layoutY="131.0" strokeType="OUTSIDE" strokeWidth="0.0" text=" ">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Text>
+      <Button fx:id="playAgainButton" layoutX="471.0" layoutY="424.0" mnemonicParsing="false" onAction="#playAgain" prefHeight="38.0" prefWidth="140.0" text="PLAY AGAIN" textAlignment="CENTER">
+         <font>
+            <Font name="Tempus Sans ITC" size="18.0" />
+         </font>
+      </Button>
+      <ImageView fx:id="mainImage" fitHeight="269.0" fitWidth="435.0" layoutX="357.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="playButtonFromZero" layoutX="507.0" layoutY="377.0" mnemonicParsing="false" onAction="#gameStart" prefHeight="38.0" prefWidth="140.0" text="PLAY" textAlignment="CENTER">
+         <font>
+            <Font name="Tempus Sans ITC" size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="playButtonRestart" layoutX="510.0" layoutY="424.0" mnemonicParsing="false" onAction="#gameRestart" prefHeight="38.0" prefWidth="140.0" text="PLAY AGAIN" textAlignment="CENTER">
+         <font>
+            <Font name="Tempus Sans ITC" size="18.0" />
+         </font>
+      </Button>
+      <Text fx:id="gameOverText" fill="#d0d7cb" layoutX="501.0" layoutY="312.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Over!">
+         <font>
+            <Font name="Tempus Sans ITC" size="22.0" />
+         </font>
+      </Text>
+   </children>
+</AnchorPane>
