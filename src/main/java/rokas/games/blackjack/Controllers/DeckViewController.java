@@ -1,37 +1,20 @@
 package rokas.games.blackjack.Controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import rokas.games.blackjack.Model.Card;
 import rokas.games.blackjack.Model.Deck;
 import rokas.games.blackjack.Model.Hand;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-
-
-@Getter
-@Setter
-@AllArgsConstructor
 public class DeckViewController implements Initializable {
     @FXML private Text gameOverText;
     @FXML private Button playButtonRestart;
@@ -39,7 +22,6 @@ public class DeckViewController implements Initializable {
     @FXML private Text betText;
     @FXML private Text moneyText;
     @FXML private ImageView mainImage;
-    @FXML private Button play;
     @FXML private Button playAgainButton;
     @FXML private Text dealerScoreText;
     @FXML private Text playerScoreText;
@@ -91,30 +73,7 @@ public class DeckViewController implements Initializable {
     private int playerBetAmount = 0;
     private boolean playerLostFlag = false;
 
-    private static int playerStartMoneyAmount = 1000;
-
-    public boolean getPlayerLostFlag() {
-        return playerLostFlag;
-    }
-    public void setPlayerScore(int playerScore) {
-        this.playerScore = playerScore;
-    }
-
-    public int getPlayerHandCount() {
-        return playerHandCount;
-    }
-
-    public int getPlayerScore() {
-        return playerScore;
-    }
-
-    public Button getPlayButton() {
-        return playButton;
-    }
-
-    public Text getBetNotice() {
-        return betNotice;
-    }
+    private static final int playerStartMoneyAmount = 1000;
 
     public DeckViewController() {
         this.deck = new Deck();
@@ -221,127 +180,148 @@ public class DeckViewController implements Initializable {
         dealerCard5.setVisible(false);
     }
     public boolean checkIfBust(int score){
-        if(score > 21){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return score > 21;
     }
 
     public boolean checkIfMaxScore(int score){
-        if(score == 21){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return score == 21;
     }
 
     public boolean compareScores(int playerCurrentScore, int dealerCurrentScore){
-        if(playerCurrentScore > dealerCurrentScore){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return playerCurrentScore > dealerCurrentScore;
     }
 
     public boolean checkIfPush(int playerCurrentScore, int dealerCurrentScore){
-        if (playerCurrentScore == dealerCurrentScore){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return playerCurrentScore == dealerCurrentScore;
     }
 
     public void hitCard() {
-        if (deck.getDeckSize() == 0) {
-            deck = new Deck();
-            deck.shuffle();
+        if (shouldResetDeck()) {
+            resetDeck();
         }
-        hand = new Hand();
+
         currentCard = deck.dealCard();
-        int currentCardFaceValue;
         playerHandCount++;
 
-        ImageView playerCard = getPlayerCardImageView(playerHandCount);
-        playerCard.setImage(currentCard.getImage());
-        playerCard.setVisible(true);
+        displayPlayerCard(currentCard);
 
-        currentCardFaceValue = hand.extractFaceValue(currentCard.toString(), playerScore);
+        int currentCardFaceValue = calculateCardFaceValue();
         playerScore = hand.calculateScore(playerScore, currentCardFaceValue);
-        displayPlayerFaceValue.setText(String.valueOf(playerScore));
-        cardsInDeck.setText(Integer.toString(deck.getDeckSize()));
+        updatePlayerUI();
 
-        if (checkIfBust(playerScore) && playerHandCount > 2) {
-            winsText.setVisible(true);
-            winsText.setText("Dealer wins (player busted)");
-            playAgainButton.setVisible(true);
-            playerLostFlag = true;
-            toggleButtons(false);
-            if (checkIfGameOver(playerMoneyAmount)) {
-                showGameOverScreen();
-            }
-        } else if (checkIfMaxScore(playerScore) && playerHandCount >= 2) {
-            winsText.setVisible(true);
-            winsText.setText("Player wins (player got 21)");
-            playAgainButton.setVisible(true);
-            playerMoneyAmount = playerMoneyAmount + playerBetAmount * 2;
-            playerMoney.setText(Integer.toString(playerMoneyAmount));
-            playerLostFlag = false;
-            toggleButtons(false);
+        if (shouldHandleBust()) {
+            handleBust();
+        } else if (shouldHandleMaxScore()) {
+            handleMaxScore();
         }
+
+        updateHandInfo();
+    }
+
+    private void updateHandInfo() {
         hand.setPlayerHandCardCount(playerHandCount);
         hand.setPlayerScoreCount(playerScore);
     }
 
-    private ImageView getPlayerCardImageView(int playerHandCount) {
-        switch (playerHandCount) {
-            case 1: return playerCard1;
-            case 2: return playerCard2;
-            case 3: return playerCard3;
-            case 4: return playerCard4;
-            case 5: return playerCard5;
-            case 6: return playerCard6;
-            case 7: return playerCard7;
-            case 8: return playerCard8;
-            case 9: return playerCard9;
-            case 10: return playerCard10;
-            case 11: return playerCard11;
-            default: return null;
+    boolean shouldResetDeck() {
+        return deck.getDeckSize() == 0;
+    }
+
+    private void resetDeck() {
+        deck = new Deck();
+        deck.shuffle();
+    }
+
+    private void displayPlayerCard(Card card) {
+        ImageView playerCard = getPlayerCardImageView(playerHandCount);
+        assert playerCard != null;
+        playerCard.setImage(card.getImage());
+        playerCard.setVisible(true);
+    }
+
+    private int calculateCardFaceValue() {
+        return hand.extractFaceValue(currentCard.toString(), playerScore);
+    }
+
+    private void updatePlayerUI() {
+        displayPlayerFaceValue.setText(String.valueOf(playerScore));
+        cardsInDeck.setText(Integer.toString(deck.getDeckSize()));
+    }
+
+    private boolean shouldHandleBust() {
+        return playerHandCount > 2 && checkIfBust(playerScore);
+    }
+
+    private void handleBust() {
+        displayBustMessage();
+        playerLostFlag = true;
+        toggleButtons(false);
+        if (checkIfGameOver(playerMoneyAmount)) {
+            showGameOverScreen();
         }
     }
+
+    private boolean shouldHandleMaxScore() {
+        return playerHandCount >= 2 && checkIfMaxScore(playerScore);
+    }
+
+    private void handleMaxScore() {
+        displayMaxScoreMessage();
+        playerMoneyAmount = playerMoneyAmount + playerBetAmount * 2;
+        playerMoney.setText(Integer.toString(playerMoneyAmount));
+        playerLostFlag = false;
+        toggleButtons(false);
+    }
+
+    private void displayBustMessage() {
+        winsText.setVisible(true);
+        winsText.setText("Dealer wins (player busted)");
+        playAgainButton.setVisible(true);
+    }
+
+    private void displayMaxScoreMessage() {
+        winsText.setVisible(true);
+        winsText.setText("Player wins (player got 21)");
+        playAgainButton.setVisible(true);
+    }
+
+    private ImageView getPlayerCardImageView(int playerHandCount) {
+        return switch (playerHandCount) {
+            case 1 -> playerCard1;
+            case 2 -> playerCard2;
+            case 3 -> playerCard3;
+            case 4 -> playerCard4;
+            case 5 -> playerCard5;
+            case 6 -> playerCard6;
+            case 7 -> playerCard7;
+            case 8 -> playerCard8;
+            case 9 -> playerCard9;
+            case 10 -> playerCard10;
+            case 11 -> playerCard11;
+            default -> null;
+        };
+    }
     private ImageView getDealerCardByIndex(int index) {
-        switch (index) {
-            case 1:
-                return dealerCard1;
-            case 2:
+        return switch (index) {
+            case 1 -> dealerCard1;
+            case 2 -> {
                 previousCard = currentCard;
-                return dealerCard2;
-            case 3:
+                yield dealerCard2;
+            }
+            case 3 -> {
                 dealerCard2.setImage(previousCard.getImage());
-                return dealerCard3;
-            case 4:
-                return dealerCard4;
-            case 5:
-                return dealerCard5;
-            case 6:
-                return dealerCard6;
-            case 7:
-                return dealerCard7;
-            case 8:
-                return dealerCard8;
-            case 9:
-                return dealerCard9;
-            case 10:
-                return dealerCard10;
-            case 11:
-                return dealerCard11;
-            default:
-                throw new IndexOutOfBoundsException("Invalid dealer card index: " + index);
-        }
+                yield dealerCard3;
+            }
+            case 4 -> dealerCard4;
+            case 5 -> dealerCard5;
+            case 6 -> dealerCard6;
+            case 7 -> dealerCard7;
+            case 8 -> dealerCard8;
+            case 9 -> dealerCard9;
+            case 10 -> dealerCard10;
+            case 11 -> dealerCard11;
+            default -> throw new IndexOutOfBoundsException("Invalid dealer card index: " + index);
+        };
     }
 
     public void standCard() {
@@ -445,10 +425,10 @@ public class DeckViewController implements Initializable {
         }
     }
 
-    public void betTen(ActionEvent actionEvent) {
+    public void betTen() {
         addBet(10);
     }
-    public void betTwentyFive(ActionEvent actionEvent) {
+    public void betTwentyFive() {
         addBet(25);
     }
 
@@ -493,7 +473,7 @@ public class DeckViewController implements Initializable {
 
 
     public boolean checkIfDealerHitNext(int score) {
-        int probability = 0;
+        int probability;
         Random rand = new Random();
         int randInt = rand.nextInt(100) + 1;
         if (score > 0 && score <= 10) {
@@ -515,12 +495,7 @@ public class DeckViewController implements Initializable {
     }
 
     public boolean checkIfGameOver(int money){
-        if (money <= 0){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return money <= 0;
     }
 
 
@@ -549,65 +524,66 @@ public class DeckViewController implements Initializable {
 
         playerScoreText.setVisible(false);
         playerMoney.setVisible(false);
+        hidePlayerCards();
+        hideDealerCards();
+    }
+
+    public void toggleElements(boolean toggleFlag) {
+        if (toggleFlag) {
+            showGameElements();
+        } else {
+            hideGameElements();
+        }
+    }
+
+    private void showGameElements() {
+        betPane.setVisible(false);
+        hitButton.setVisible(true);
+        standButton.setVisible(true);
+        playButton.setVisible(false);
+        playAgainButton.setVisible(false);
+        cardsInDeck.setVisible(true);
+        playerScoreText.setVisible(true);
+        dealerScoreText.setVisible(true);
+        cardsLeftImageView.setVisible(true);
+        displayPlayerFaceValue.setVisible(true);
+        displayDealerFaceValue.setVisible(true);
+    }
+
+    private void hideGameElements() {
+        betPane.setVisible(true);
+        hitButton.setVisible(false);
+        standButton.setVisible(false);
+        doubleButton.setVisible(false);
+        winsText.setVisible(false);
+        playerScoreText.setVisible(false);
+        dealerScoreText.setVisible(false);
+        cardsLeftImageView.setVisible(false);
+        displayPlayerFaceValue.setVisible(false);
+        displayDealerFaceValue.setVisible(false);
+        betAmount.setVisible(true);
+        betText.setVisible(true);
+        moneyText.setVisible(true);
+        playerMoney.setVisible(true);
+
+        hidePlayerCards();
+        hideDealerCards();
+    }
+
+    private void hidePlayerCards() {
         playerCard1.setVisible(false);
         playerCard2.setVisible(false);
         playerCard3.setVisible(false);
         playerCard4.setVisible(false);
         playerCard5.setVisible(false);
+    }
 
+    private void hideDealerCards() {
         dealerCard1.setVisible(false);
         dealerCard2.setVisible(false);
         dealerCard3.setVisible(false);
         dealerCard4.setVisible(false);
         dealerCard5.setVisible(false);
     }
-
-    public void toggleElements(boolean toggleFlag){
-        if (toggleFlag){
-            betPane.setVisible(false);
-            hitButton.setVisible(true);
-            standButton.setVisible(true);
-            playButton.setVisible(false);
-            playAgainButton.setVisible(false);
-            cardsInDeck.setVisible(true);
-            playerScoreText.setVisible(true);
-            dealerScoreText.setVisible(true);
-            cardsInDeck.setVisible(true);
-            cardsLeftImageView.setVisible(true);
-            displayPlayerFaceValue.setVisible(true);
-            displayDealerFaceValue.setVisible(true);
-        }
-        else{
-            betPane.setVisible(true);
-            hitButton.setVisible(false);
-            standButton.setVisible(false);
-            doubleButton.setVisible(false);
-            winsText.setVisible(false);
-            playerScoreText.setVisible(false);
-            dealerScoreText.setVisible(false);
-            cardsInDeck.setVisible(false);
-            cardsLeftImageView.setVisible(false);
-            displayPlayerFaceValue.setVisible(false);
-            displayDealerFaceValue.setVisible(false);
-            betAmount.setVisible(true);
-            betText.setVisible(true);
-            moneyText.setVisible(true);
-            playerMoney.setVisible(true);
-
-            playerCard1.setVisible(false);
-            playerCard2.setVisible(false);
-            playerCard3.setVisible(false);
-            playerCard4.setVisible(false);
-            playerCard5.setVisible(false);
-
-            dealerCard1.setVisible(false);
-            dealerCard2.setVisible(false);
-            dealerCard3.setVisible(false);
-            dealerCard4.setVisible(false);
-            dealerCard5.setVisible(false);
-        }
-    }
-
-
 
 }
