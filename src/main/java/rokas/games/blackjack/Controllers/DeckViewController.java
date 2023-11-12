@@ -1,37 +1,21 @@
 package rokas.games.blackjack.Controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import rokas.games.blackjack.Model.Card;
 import rokas.games.blackjack.Model.Deck;
 import rokas.games.blackjack.Model.Hand;
 
-import java.io.IOException;
+
 import java.net.URL;
 import java.util.Random;
 import java.util.ResourceBundle;
 
-
-
-@Getter
-@Setter
-@AllArgsConstructor
 public class DeckViewController implements Initializable {
     @FXML private Text gameOverText;
     @FXML private Button playButtonRestart;
@@ -39,7 +23,6 @@ public class DeckViewController implements Initializable {
     @FXML private Text betText;
     @FXML private Text moneyText;
     @FXML private ImageView mainImage;
-    @FXML private Button play;
     @FXML private Button playAgainButton;
     @FXML private Text dealerScoreText;
     @FXML private Text playerScoreText;
@@ -78,6 +61,27 @@ public class DeckViewController implements Initializable {
     @FXML private ImageView playerCard9;
     @FXML private ImageView playerCard10;
     @FXML private ImageView playerCard11;
+
+    public Text getWinsText() {
+        return winsText;
+    }
+
+    public Text getGameOverText() {
+        return gameOverText;
+    }
+
+    public void setDealerHandCount(int dealerHandCount) {
+        this.dealerHandCount = dealerHandCount;
+    }
+
+    public void setDealerScore(int dealerScore) {
+        this.dealerScore = dealerScore;
+    }
+
+    public void setPlayerMoneyAmount(int playerMoneyAmount) {
+        this.playerMoneyAmount = playerMoneyAmount;
+    }
+
     private Deck deck;
     private Hand hand;
     private int playerHandCount = 0;
@@ -89,32 +93,15 @@ public class DeckViewController implements Initializable {
     private int hiddenCardValue = 0;
     private int playerMoneyAmount = 0;
     private int playerBetAmount = 0;
+
+    public int getDealerHandCount() {
+        return dealerHandCount;
+    }
+
     private boolean playerLostFlag = false;
 
-    private static int playerStartMoneyAmount = 1000;
-
-    public boolean getPlayerLostFlag() {
-        return playerLostFlag;
-    }
-    public void setPlayerScore(int playerScore) {
-        this.playerScore = playerScore;
-    }
-
-    public int getPlayerHandCount() {
-        return playerHandCount;
-    }
-
-    public int getPlayerScore() {
-        return playerScore;
-    }
-
-    public Button getPlayButton() {
-        return playButton;
-    }
-
-    public Text getBetNotice() {
-        return betNotice;
-    }
+    private final Random randomNumber = new Random();
+    private static final int PLAYERSTARTMONEYAMOUNT = 1000;
 
     public DeckViewController() {
         this.deck = new Deck();
@@ -147,7 +134,7 @@ public class DeckViewController implements Initializable {
         deck.shuffle();
         playButton.setVisible(false);
         playAgainButton.setVisible(false);
-        playerMoneyAmount = playerStartMoneyAmount;
+        playerMoneyAmount = PLAYERSTARTMONEYAMOUNT;
         playerMoney.setText(Integer.toString(playerMoneyAmount));
         hideEverything();
         cardsLeftImageView.setImage(new Image("file:src/main/resources/rokas/games/blackjack/Media/icons8-ace-of-diamonds-50.png"));
@@ -194,7 +181,6 @@ public class DeckViewController implements Initializable {
         playButton.setVisible(false);
         playAgainButton.setVisible(false);
         playerBetAmount = 0;
-        playerMoneyAmount = 1000;
         betAmount.setText(Integer.toString(playerBetAmount));
         playerMoney.setText(Integer.toString(playerMoneyAmount));
         toggleElements(false);
@@ -221,39 +207,11 @@ public class DeckViewController implements Initializable {
         dealerCard5.setVisible(false);
     }
     public boolean checkIfBust(int score){
-        if(score > 21){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return score > 21;
     }
 
     public boolean checkIfMaxScore(int score){
-        if(score == 21){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
-    public boolean compareScores(int playerCurrentScore, int dealerCurrentScore){
-        if(playerCurrentScore > dealerCurrentScore){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
-    public boolean checkIfPush(int playerCurrentScore, int dealerCurrentScore){
-        if (playerCurrentScore == dealerCurrentScore){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return score == 21;
     }
 
     public void hitCard() {
@@ -267,8 +225,12 @@ public class DeckViewController implements Initializable {
         playerHandCount++;
 
         ImageView playerCard = getPlayerCardImageView(playerHandCount);
-        playerCard.setImage(currentCard.getImage());
-        playerCard.setVisible(true);
+        if (playerCard != null) {
+            playerCard.setImage(currentCard.getImage());
+            playerCard.setVisible(true);
+        } else {
+            return;
+        }
 
         currentCardFaceValue = hand.extractFaceValue(currentCard.toString(), playerScore);
         playerScore = hand.calculateScore(playerScore, currentCardFaceValue);
@@ -298,140 +260,144 @@ public class DeckViewController implements Initializable {
     }
 
     private ImageView getPlayerCardImageView(int playerHandCount) {
-        switch (playerHandCount) {
-            case 1: return playerCard1;
-            case 2: return playerCard2;
-            case 3: return playerCard3;
-            case 4: return playerCard4;
-            case 5: return playerCard5;
-            case 6: return playerCard6;
-            case 7: return playerCard7;
-            case 8: return playerCard8;
-            case 9: return playerCard9;
-            case 10: return playerCard10;
-            case 11: return playerCard11;
-            default: return null;
-        }
+        return switch (playerHandCount) {
+            case 1 -> playerCard1;
+            case 2 -> playerCard2;
+            case 3 -> playerCard3;
+            case 4 -> playerCard4;
+            case 5 -> playerCard5;
+            case 6 -> playerCard6;
+            case 7 -> playerCard7;
+            case 8 -> playerCard8;
+            case 9 -> playerCard9;
+            case 10 -> playerCard10;
+            case 11 -> playerCard11;
+            default -> null;
+        };
     }
     private ImageView getDealerCardByIndex(int index) {
-        switch (index) {
-            case 1:
-                return dealerCard1;
-            case 2:
+        return switch (index) {
+            case 1 -> dealerCard1;
+            case 2 -> {
                 previousCard = currentCard;
-                return dealerCard2;
-            case 3:
+                yield dealerCard2;
+            }
+            case 3 -> {
                 dealerCard2.setImage(previousCard.getImage());
-                return dealerCard3;
-            case 4:
-                return dealerCard4;
-            case 5:
-                return dealerCard5;
-            case 6:
-                return dealerCard6;
-            case 7:
-                return dealerCard7;
-            case 8:
-                return dealerCard8;
-            case 9:
-                return dealerCard9;
-            case 10:
-                return dealerCard10;
-            case 11:
-                return dealerCard11;
-            default:
-                throw new IndexOutOfBoundsException("Invalid dealer card index: " + index);
-        }
+                yield dealerCard3;
+            }
+            case 4 -> dealerCard4;
+            case 5 -> dealerCard5;
+            case 6 -> dealerCard6;
+            case 7 -> dealerCard7;
+            case 8 -> dealerCard8;
+            case 9 -> dealerCard9;
+            case 10 -> dealerCard10;
+            case 11 -> dealerCard11;
+            default -> throw new IndexOutOfBoundsException("Invalid dealer card index: " + index);
+        };
     }
 
     public void standCard() {
-        if (deck.getDeckSize() == 0) {
-            deck = new Deck();
-            deck.shuffle();
+        resetDeckIfNeeded();
+
+        dealAndDisplayCard();
+
+        handleWinLoseConditions();
+    }
+
+    /**
+     * Reset the deck if it's empty.
+     */
+    void resetDeckIfNeeded() {
+        if (this.deck.getDeckSize() == 0) {
+            this.deck = new Deck();
+            this.deck.shuffle();
         }
+    }
 
-        hand = new Hand();
-        currentCard = deck.dealCard();
-        int currentCardFaceValue;
-        dealerHandCount++;
-
-        ImageView dealerCard = getDealerCardByIndex(dealerHandCount);
-        dealerCard.setImage(currentCard.getImage());
+    /**
+     * Deal a card, display it, and update the dealer's hand count and score.
+     */
+    void dealAndDisplayCard() {
+        this.hand = new Hand();
+        this.currentCard = this.deck.dealCard();
+        ++this.dealerHandCount;
+        ImageView dealerCard = this.getDealerCardByIndex(this.dealerHandCount);
+        dealerCard.setImage(this.currentCard.getImage());
         dealerCard.setVisible(true);
-        currentCardFaceValue = hand.extractFaceValue(currentCard.toString(), dealerScore);
 
-        if (dealerHandCount == 2){
-            hiddenCardValue = currentCardFaceValue;
-        }
-        else if (dealerHandCount == 3){
-            currentCardFaceValue = currentCardFaceValue + hiddenCardValue;
-            dealerScore = hand.calculateScore(dealerScore, currentCardFaceValue);
-        }
-        else{
-            dealerScore = hand.calculateScore(dealerScore, currentCardFaceValue);
-        }
-        displayDealerFaceValue.setText(String.valueOf(dealerScore));
-        hand.setDealerHandCardCount(dealerHandCount);
-        hand.setDealerScoreCount(dealerScore);
-        cardsInDeck.setText(Integer.toString(deck.getDeckSize()));
-        if(checkIfMaxScore(dealerScore+hiddenCardValue) && dealerHandCount == 2){
-            winsText.setVisible(true);
-            winsText.setText("Dealer wins (dealer got 21)");
-            playAgainButton.setVisible(true);
-            toggleButtons(false);
-            dealerCard2.setImage(previousCard.getImage());
-            if(checkIfGameOver(playerMoneyAmount)){
-                showGameOverScreen();
-            }
-        }
-        else if(dealerHandCount > 2){
-            if(checkIfBust(dealerScore)){
-                winsText.setVisible(true);
-                winsText.setText("Player wins (dealer busted)");
-                playAgainButton.setVisible(true);
-                playerMoneyAmount += playerBetAmount*2;
-                playerMoney.setText(Integer.toString(playerMoneyAmount));
-                toggleButtons(false);
-            }
-            else if(dealerScore <= 20 && checkIfDealerHitNext(dealerScore)){
-                standCard();
-            }
-            else if(checkIfMaxScore(dealerScore)){
-                winsText.setVisible(true);
-                winsText.setText("Dealer wins (dealer got 21)");
-                playAgainButton.setVisible(true);
-                toggleButtons(false);
-                if(checkIfGameOver(playerMoneyAmount)){
-                    showGameOverScreen();
-                }
-            }
-            else if (compareScores(playerScore, dealerScore)){
-                winsText.setVisible(true);
-                winsText.setText("Player wins (player score is bigger)");
-                playAgainButton.setVisible(true);
-                playerMoneyAmount += playerBetAmount*2;
-                playerMoney.setText(Integer.toString(playerMoneyAmount));
-                toggleButtons(false);
-            }
-            else if (checkIfPush(playerScore, dealerScore)){
-                winsText.setVisible(true);
-                winsText.setText("Push!");
-                playAgainButton.setVisible(true);
-                playerMoneyAmount += playerBetAmount;
-                playerMoney.setText(Integer.toString(playerMoneyAmount));
-                toggleButtons(false);
-            }
-            else{
-                winsText.setVisible(true);
-                winsText.setText("Dealer wins (dealer score is bigger)");
-                playAgainButton.setVisible(true);
-                toggleButtons(false);
-                if(checkIfGameOver(playerMoneyAmount)){
-                    showGameOverScreen();
-                }
-            }
+        int currentCardFaceValue = this.hand.extractFaceValue(this.currentCard.toString(), this.dealerScore);
+
+        if (this.dealerHandCount == 2) {
+            this.hiddenCardValue = currentCardFaceValue;
+        } else if (this.dealerHandCount == 3) {
+            currentCardFaceValue += this.hiddenCardValue;
         }
 
+        this.dealerScore = this.hand.calculateScore(this.dealerScore, currentCardFaceValue);
+
+        this.displayDealerFaceValue.setText(String.valueOf(this.dealerScore));
+        this.hand.setDealerHandCardCount(this.dealerHandCount);
+        this.hand.setDealerScoreCount(this.dealerScore);
+        this.cardsInDeck.setText(Integer.toString(this.deck.getDeckSize()));
+    }
+
+    /**
+     * Handle win/lose conditions and display appropriate messages.
+     */
+    void handleWinLoseConditions() {
+        if (this.dealerHandCount == 2 && this.checkIfMaxScore(this.dealerScore + this.hiddenCardValue)) {
+            displayWinCondition("Dealer wins (dealer got 21)", this.previousCard.getImage());
+            checkAndShowGameOverScreen();
+        } else if (this.dealerHandCount > 2) {
+            handleWinLoseConditionsAfterSecondCard();
+        }
+    }
+
+    /**
+     * Handle win/lose conditions after the second card is dealt.
+     */
+    void handleWinLoseConditionsAfterSecondCard() {
+        if (this.checkIfBust(this.dealerScore)) {
+            displayWinCondition("Player wins (dealer busted)", null);
+        } else if (this.dealerScore <= 20 && this.checkIfDealerHitNext(this.dealerScore)) {
+            this.standCard();
+        } else if (this.checkIfMaxScore(this.dealerScore)) {
+            displayWinCondition("Dealer wins (dealer got 21)", null);
+            checkAndShowGameOverScreen();
+        } else {
+            displayWinCondition("Dealer wins (dealer score is bigger)", null);
+            checkAndShowGameOverScreen();
+        }
+    }
+
+    /**
+     * Display the win condition and update UI accordingly.
+     *
+     * @param message   The win condition message to display.
+     * @param image     The image to set for the dealer's second card (can be null).
+     */
+    void displayWinCondition(String message, Image image) {
+        this.winsText.setVisible(true);
+        this.winsText.setText(message);
+        this.playAgainButton.setVisible(true);
+        this.toggleButtons(false);
+
+        if (image != null) {
+            this.dealerCard2.setImage(image);
+        }
+
+        checkAndShowGameOverScreen();
+    }
+
+    /**
+     * Check if the game is over based on the player's money amount.
+     */
+    void checkAndShowGameOverScreen() {
+        if (this.checkIfGameOver(this.playerMoneyAmount)) {
+            this.showGameOverScreen();
+        }
     }
 
     public void doubleCard() {
@@ -445,57 +411,102 @@ public class DeckViewController implements Initializable {
         }
     }
 
-    public void betTen(ActionEvent actionEvent) {
-        addBet(10);
+    public void betTen() {
+        adjustBetAmount(10);
     }
-    public void betTwentyFive(ActionEvent actionEvent) {
-        addBet(25);
+    public void betTwentyFive() {
+        adjustBetAmount(25);
     }
 
     public void betFifty() {
-        addBet(50);
+        adjustBetAmount(50);
     }
 
     public void betHundred() {
-        addBet(100);
+        adjustBetAmount(100);
     }
 
     public void betTwoHundred() {
-        addBet(200);
+        adjustBetAmount(200);
     }
 
     public void betAllIn() {
-        addBet(playerMoneyAmount);
+        adjustBetAmount(playerMoneyAmount);
     }
 
     public void restartBet() {
-        addBet(-1);
+        adjustBetAmount(-1);
     }
 
 
-    public void addBet(int amount) {
-        if (amount > 0 && playerMoneyAmount >= amount) {
-            playerBetAmount += amount;
-            playerMoneyAmount -= amount;
-            betAmount.setText(Integer.toString(playerBetAmount));
-            playerMoney.setText(Integer.toString(playerMoneyAmount));
-            playButton.setVisible(true);
-        } else if (amount <= 0) {
-            playerMoneyAmount += playerBetAmount;
-            playerBetAmount = 0;
-            betAmount.setText(Integer.toString(playerBetAmount));
-            playerMoney.setText(Integer.toString(playerMoneyAmount));
-            playButton.setVisible(false);
+    /**
+     * Adjusts the player's bet amount based on the given input.
+     * If the input is valid, updates the bet amount, player money, and UI accordingly.
+     * If the input is not valid, displays a "Not enough money" notice.
+     *
+     * @param amount The amount to adjust the player's bet.
+     */
+    public void adjustBetAmount(int amount) {
+        if (isValidBetAmount(amount)) {
+            updatePlayerBetAndMoney(amount);
+            updateUI();
+            showPlayButton();
         } else {
-            betNotice.setText("Not enough money!");
+            displayNotEnoughMoneyNotice();
         }
     }
 
+    /**
+     * Checks if the given bet amount is valid.
+     *
+     * @param amount The bet amount to check.
+     * @return True if the amount is greater than zero and the player has enough money, otherwise false.
+     */
+    boolean isValidBetAmount(int amount) {
+        return amount > 0 && playerMoneyAmount >= amount;
+    }
+
+    /**
+     * Updates the player's bet and money amounts based on the given input.
+     *
+     * @param amount The amount to adjust the player's bet.
+     */
+    void updatePlayerBetAndMoney(int amount) {
+        if (amount <= 0) {
+            playerMoneyAmount += playerBetAmount;
+            playerBetAmount = 0;
+        } else {
+            playerBetAmount += amount;
+            playerMoneyAmount -= amount;
+        }
+    }
+
+    /**
+     * Updates the UI to reflect the current player's bet and money amounts.
+     */
+    void updateUI() {
+        betAmount.setText(Integer.toString(playerBetAmount));
+        playerMoney.setText(Integer.toString(playerMoneyAmount));
+    }
+
+    /**
+     * Displays a "Not enough money" notice and hides the play button.
+     */
+    void displayNotEnoughMoneyNotice() {
+        betNotice.setText("Not enough money!");
+        playButton.setVisible(false);
+    }
+
+    /**
+     * Sets play button visibility to true
+     */
+    void showPlayButton() {
+        playButton.setVisible(true);
+    }
 
     public boolean checkIfDealerHitNext(int score) {
         int probability = 0;
-        Random rand = new Random();
-        int randInt = rand.nextInt(100) + 1;
+        int randInt = randomNumber.nextInt(100) + 1;
         if (score > 0 && score <= 10) {
             return true;
         } else if (score > 10 && score <= 14) {
@@ -515,12 +526,7 @@ public class DeckViewController implements Initializable {
     }
 
     public boolean checkIfGameOver(int money){
-        if (money <= 0){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return money <= 0;
     }
 
 
@@ -607,7 +613,4 @@ public class DeckViewController implements Initializable {
             dealerCard5.setVisible(false);
         }
     }
-
-
-
 }
